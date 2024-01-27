@@ -1,0 +1,41 @@
+ENV['VAGRANT_NO_PARALLEL'] = 'yes'
+
+VAGRANT_BOX         = "generic/centos9s"
+VAGRANT_BOX_VERSION = "4.2.10"
+CPUS_NODE           = 2
+MEMORY_NODE         = 4096
+CEPH_NODES_COUNT    = 3
+DISK_SIZE_LIBVIRT   = "10G"  # 10GB for libvirt
+ADMIN_NODE          = 1  # Define which node is the admin node
+
+Vagrant.configure(2) do |config|
+
+  (1..CEPH_NODES_COUNT).each do |i|
+    config.vm.define "ceph#{i}" do |node|
+
+      node.vm.box               = VAGRANT_BOX
+      node.vm.box_check_update  = false
+      node.vm.box_version       = VAGRANT_BOX_VERSION
+      node.vm.hostname          = "ceph#{i}.example.com"
+      node.vm.network "private_network", ip: "192.168.50.10#{i}"
+
+      node.vm.provider :libvirt do |v|
+        v.memory  = MEMORY_NODE
+        v.nested  = true
+        v.cpus    = CPUS_NODE
+
+        # Add 3 disks of 10GB each to the VM
+        1.times do
+          v.storage :file, :size => DISK_SIZE_LIBVIRT
+        end
+      end
+
+      # Use a different provision script for the admin node
+      if i == ADMIN_NODE
+        node.vm.provision "shell", path: "cephadm-bootstrap.sh"
+      else
+        node.vm.provision "shell", path: "bootstrap_ceph.sh"
+      end
+    end
+  end
+end

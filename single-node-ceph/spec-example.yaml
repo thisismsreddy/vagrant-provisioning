@@ -1,0 +1,49 @@
+service_type: alertmanager
+service_name: alertmanager
+placement:
+  count: 1
+---
+service_type: crash
+service_name: crash
+placement:
+  host_pattern: '*'
+---
+service_type: grafana
+service_name: grafana
+placement:
+  count: 1
+spec:
+  anonymous_access: true
+---
+service_type: mgr
+service_name: mgr
+placement:
+  count: 2
+---
+service_type: mon
+service_name: mon
+placement:
+  count: 5
+---
+service_type: node-exporter
+service_name: node-exporter
+placement:
+  host_pattern: '*'
+---
+service_type: osd
+service_id: cost_capacity
+service_name: osd.cost_capacity
+placement:
+  host_pattern: '*'
+spec:
+  data_devices:
+    rotational: 1
+  encrypted: true
+  filter_logic: AND
+  objectstore: bluestore
+---
+service_type: prometheus
+service_name: prometheus
+placement:
+  count: 1
+

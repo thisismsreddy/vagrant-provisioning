@@ -1,0 +1,14 @@
+[mons]
+192.168.121.10 ansible_user=root ansible_ssh_pass=msreddy become=true
+192.168.121.122 ansible_user=root ansible_ssh_pass=msreddy become=true
+192.168.121.129 ansible_user=root ansible_ssh_pass=msreddy become=true
+[mgrs]
+192.168.121.10 ansible_user=root ansible_ssh_pass=msreddy become=true
+192.168.121.122 ansible_user=root ansible_ssh_pass=msreddy become=true
+192.168.121.129 ansible_user=root ansible_ssh_pass=msreddy become=true
+[osds]
+192.168.121.10 ansible_user=root ansible_ssh_pass=msreddy become=true
+192.168.121.122 ansible_user=root ansible_ssh_pass=msreddy become=true
+192.168.121.129 ansible_user=root ansible_ssh_pass=msreddy become=true
+[grafana-server]
+192.168.121.10 ansible_user=root ansible_ssh_pass=msreddy become=true

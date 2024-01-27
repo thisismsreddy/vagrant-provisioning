@@ -1,0 +1,35 @@
+ENV['VAGRANT_NO_PARALLEL'] = 'yes'
+
+VAGRANT_BOX         = "generic/centos9s"
+VAGRANT_BOX_VERSION = "4.2.10"
+CPUS_NODE           = 2
+MEMORY_NODE         = 4096
+CEPH_NODES_COUNT    = 1
+DISK_SIZE_LIBVIRT   = "10G"  # 10GB for libvirt
+
+Vagrant.configure(2) do |config|
+
+  (1..CEPH_NODES_COUNT).each do |i|
+    config.vm.define "ceph#{i}" do |node|
+
+      node.vm.box               = VAGRANT_BOX
+      node.vm.box_check_update  = false
+      node.vm.box_version       = VAGRANT_BOX_VERSION
+      node.vm.hostname          = "ceph#{i}.example.com"
+      node.vm.network "private_network", ip: "192.168.50.10#{i}"
+
+      node.vm.provider :libvirt do |v|
+        v.memory  = MEMORY_NODE
+        v.nested  = true
+        v.cpus    = CPUS_NODE
+
+        # Add 3 disks of 10GB each to the VM
+        3.times do
+          v.storage :file, :size => DISK_SIZE_LIBVIRT
+        end
+      end
+      node.vm.provision "shell", path: "bootstrap_ceph.sh"
+    end
+  end
+end
+

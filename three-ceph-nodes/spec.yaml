@@ -1,0 +1,68 @@
+> vi config.yaml
+
+---
+service_type: host
+addr: 172.31.46.15
+hostname: server1.example.com
+---
+service_type: host
+addr: 172.31.35.42
+hostname: server2.example.com
+---
+service_type: mon
+placement:
+  hosts:
+    - server1.example.com
+    - server2.example.com
+---
+service_type: mgr
+placement:
+  hosts:
+    - server1.example.com
+    - server2.example.com
+---
+service_type: osd
+service_id: default_drive_group
+placement:
+  hosts:
+    - server1.example.com
+    - server2.example.com
+data_devices:
+  paths:
+    - /dev/xvdb
+    - /dev/xvdc
+
+> ceph orch apply -i config.yaml
+
+---------------------
+
+---
+service_type: host
+addr: 192.168.121.13
+hostname: ceph1.example.com
+---
+service_type: host
+addr: 192.168.121.112
+hostname: ceph2.example.com
+---
+service_type: host
+addr: 192.168.121.62
+hostname: ceph3.example.com
+---
+service_type: mon
+placement:
+  host_pattern: "*"
+
+---
+service_type: mgr
+placement:
+  host_pattern: "*"
+---
+service_type: osd
+service_id: all-available-devices
+encrypted: "true"
+method: raw
+placement:
+  host_pattern: "*"
+data_devices:
+  all: "true"
